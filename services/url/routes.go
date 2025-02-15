@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -81,13 +82,23 @@ func (u *URLHandler) Redirect(c *gin.Context) {
 	shortCode := c.Param("short_code")
 
 	URL, err := u.repo.GetOne(shortCode)
-	log.Println(URL)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "URL not found"})
 		return
 	}
 
+	userAgent := c.GetHeader("User-Agent")
+	if strings.Contains(userAgent, "Googlebot") || strings.Contains(userAgent, "bingbot") {
+		log.Println("Prefetch detected, not counting")
+		c.Status(http.StatusOK)
+		return
+	}
+
 	c.Redirect(http.StatusFound, URL.OriginalURL)
+
+	if err := u.repo.Update(URL.ID, URL.HitCount+1); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
 }
 
 func (u *URLHandler) GetAll(c *gin.Context) {

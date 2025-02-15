@@ -48,6 +48,13 @@ func (u *URLRepositoryImpl) GetAll() ([]types.URL, error) {
 	return URLs, nil
 }
 
+func (u *URLRepositoryImpl) Update(ID uint, count int) error {
+	if err := u.DB.Model(&types.URL{}).Where("id = ?", ID).Update("hit_count", count).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (u *URLRepositoryImpl) Delete(URL string) error {
 	if err := u.DB.Where("short_code = ?", URL).Delete(&types.URL{}).Error; err != nil {
 		return err
