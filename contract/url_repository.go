@@ -7,5 +7,5 @@ type URLRepository interface {
 	Update(ID uint, count int) error
 	GetAll() ([]types.URL, error)
 	GetOne(URL string) (types.URL, error)
-	Delete(URL string) error
+	Delete() error
 }

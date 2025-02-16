@@ -2,6 +2,7 @@ package url
 
 import (
 	"go_link_reducer/types"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -18,9 +19,10 @@ func NewURLRepositoryImpl(DB *gorm.DB) *URLRepositoryImpl {
 
 func (u *URLRepositoryImpl) Create(URLPayload types.CreateURLPayload) (types.URL, error) {
 	URL := types.URL{
-		OriginalURL: URLPayload.OriginalURL,
-		ShortCode:   URLPayload.ShortCode,
-		HitCount:    0,
+		OriginalURL:    URLPayload.OriginalURL,
+		ShortCode:      URLPayload.ShortCode,
+		HitCount:       0,
+		ExpirationDate: URLPayload.ExpirationDate,
 	}
 
 	if err := u.DB.Create(&URL).Error; err != nil {
@@ -55,8 +57,8 @@ func (u *URLRepositoryImpl) Update(ID uint, count int) error {
 	return nil
 }
 
-func (u *URLRepositoryImpl) Delete(URL string) error {
-	if err := u.DB.Where("short_code = ?", URL).Delete(&types.URL{}).Error; err != nil {
+func (u *URLRepositoryImpl) Delete() error {
+	if err := u.DB.Where("expiration_date < ?", time.Now()).Delete(&types.URL{}).Error; err != nil {
 		return err
 	}
 

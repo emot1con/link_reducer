@@ -34,7 +34,7 @@ func (u *URLHandler) RegisterRoute(route *gin.Engine) {
 	route.POST("/urls", u.CreateURL)
 	route.GET("urls", u.GetAll)
 	route.GET("/:short_code", u.Redirect)
-	route.DELETE("/urls/:short_code", u.Delete)
+	route.POST("/cron/delete-expired", u.Delete)
 }
 
 func (u *URLHandler) CreateURL(c *gin.Context) {
@@ -61,6 +61,11 @@ func (u *URLHandler) CreateURL(c *gin.Context) {
 		}
 	}
 
+	// Set expiration date to 7 days from now if not provided
+	if payload.ExpirationDate.IsZero() {
+		payload.ExpirationDate = time.Now().Add(7 * 24 * time.Hour)
+	}
+
 	result, err := u.repo.Create(payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
@@ -70,11 +75,12 @@ func (u *URLHandler) CreateURL(c *gin.Context) {
 	shortURL := fmt.Sprintf("http://localhost:8080/%s", result.ShortCode)
 
 	c.JSON(http.StatusOK, gin.H{
-		"id":           result.ID,
-		"original_url": result.OriginalURL,
-		"short_url":    shortURL,
-		"created_at":   result.CreatedAt,
-		"hit_count":    result.HitCount,
+		"id":              result.ID,
+		"original_url":    result.OriginalURL,
+		"short_url":       shortURL,
+		"created_at":      result.CreatedAt,
+		"hit_count":       result.HitCount,
+		"expiration_date": result.ExpirationDate,
 	})
 }
 
@@ -112,13 +118,11 @@ func (u *URLHandler) GetAll(c *gin.Context) {
 }
 
 func (u *URLHandler) Delete(c *gin.Context) {
-	shortCode := c.Param("short_code")
-	if err := u.repo.Delete(shortCode); err != nil {
+	if err := u.repo.Delete(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "URL deleted"})
+	log.Println("Deleted expired URLs")
 }
 
 func generateShortURL(length int) string {
