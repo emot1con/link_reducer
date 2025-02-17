@@ -18,22 +18,3 @@ type CreateURLPayload struct {
 	ShortCode      string    `json:"short_code,omitempty"`
 	ExpirationDate time.Time `json:"expiration_date,omitempty"`
 }
-
-type User struct {
-	ID        uint      `gorm:"primaryKey" json:"id"`
-	Name      string    `gorm:"not null" json:"name"`
-	Email     string    `gorm:"unique;not null" json:"email"`
-	Password  string    `gorm:"not null" json:"password"`
-	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
-}
-
-type RegisterPayload struct {
-	Name     string `json:"name" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=6"`
-}
-
-type LoginPayload struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
-}

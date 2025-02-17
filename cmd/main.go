@@ -2,7 +2,7 @@ package main
 
 import (
 	"go_link_reducer/cmd/api"
-	"go_link_reducer/cmd/database/db"
+	"go_link_reducer/cmd/db"
 	"go_link_reducer/config"
 	"log"
 	"net/http"

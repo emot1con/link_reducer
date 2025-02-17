@@ -19,7 +19,6 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 	}
 
 	models := []interface{}{
-		&types.User{},
 		&types.URL{},
 	}
 
