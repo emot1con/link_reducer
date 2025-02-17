@@ -1,3 +1,2 @@
 .env
 config/db_config.go
-services/auth/password.go
