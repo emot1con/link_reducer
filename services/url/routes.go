@@ -108,13 +108,14 @@ func (u *URLHandler) Redirect(c *gin.Context) {
 }
 
 func (u *URLHandler) GetAll(c *gin.Context) {
-	URLsData, err := u.repo.GetAll()
+
+	URLsData, err := u.repo.GetAll(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": URLsData})
+	c.JSON(http.StatusOK, URLsData)
 }
 
 func (u *URLHandler) Delete(c *gin.Context) {

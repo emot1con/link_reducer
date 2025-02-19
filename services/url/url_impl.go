@@ -1,10 +1,12 @@
 package url
 
 import (
+	"github.com/gin-gonic/gin"
 	"go_link_reducer/types"
-	"time"
-
 	"gorm.io/gorm"
+	"math"
+	"strconv"
+	"time"
 )
 
 type URLRepositoryImpl struct {
@@ -41,13 +43,29 @@ func (u *URLRepositoryImpl) GetOne(link string) (types.URL, error) {
 	return URL, nil
 }
 
-func (u *URLRepositoryImpl) GetAll() ([]types.URL, error) {
+func (u *URLRepositoryImpl) GetAll(c *gin.Context) (map[string]any, error) {
 	var URLs []types.URL
-	if err := u.DB.Find(&URLs).Error; err != nil {
+
+	var total int64
+
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+
+	u.DB.Model(URLs).Count(&total)
+
+	offset := (page - 1) * 10
+
+	totalPage := int(math.Ceil(float64(total) / float64(10)))
+
+	if err := u.DB.Limit(10).Offset(offset).Find(&URLs).Error; err != nil {
 		return nil, err
 	}
 
-	return URLs, nil
+	return map[string]any{
+		"total":      total,
+		"page":       page,
+		"total_page": totalPage,
+		"data":       URLs,
+	}, nil
 }
 
 func (u *URLRepositoryImpl) Update(ID uint, count int) error {
