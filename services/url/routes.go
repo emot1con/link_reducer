@@ -32,8 +32,8 @@ func NewURLHandler(repo contract.URLRepository, validator *validator.Validate) *
 }
 
 func (u *URLHandler) RegisterRoute(route *gin.Engine) {
-	route.POST("/urls", u.CreateURL)
-	route.GET("urls", u.GetAll)
+	route.POST("/new/url", u.CreateURL)
+	route.GET("/urls", u.GetAll)
 	route.GET("/:short_code", u.Redirect)
 	route.POST("/cron/delete-expired", u.Delete)
 }
