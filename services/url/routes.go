@@ -57,14 +57,6 @@ func (u *URLHandler) RegisterRoute(route *gin.Engine) {
 }
 
 func (u *URLHandler) CreateURL(c *gin.Context) {
-	log.Printf("=== CreateURL called ===")
-	log.Printf("Method: %s", c.Request.Method)
-	log.Printf("URL: %s", c.Request.URL.String())
-	log.Printf("Host: %s", c.Request.Host)
-	log.Printf("Headers: %v", c.Request.Header)
-	log.Printf("Content-Type: %s", c.GetHeader("Content-Type"))
-	log.Printf("User-Agent: %s", c.GetHeader("User-Agent"))
-
 	var payload types.CreateURLPayload
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -88,7 +80,6 @@ func (u *URLHandler) CreateURL(c *gin.Context) {
 		}
 	}
 
-	// Set expiration date to 7 days from now if not provided
 	if payload.ExpirationDate.IsZero() {
 		payload.ExpirationDate = time.Now().Add(7 * 24 * time.Hour)
 	}
@@ -99,10 +90,8 @@ func (u *URLHandler) CreateURL(c *gin.Context) {
 		return
 	}
 
-	port := os.Getenv("PORT")
-	addr := "0.0.0.0:" + port
-
-	shortURL := fmt.Sprintf("http://%s/%s", addr, result.ShortCode)
+	addr := os.Getenv("URL_APP")
+	shortURL := fmt.Sprintf("https://%s/%s", addr, result.ShortCode)
 
 	c.JSON(http.StatusOK, gin.H{
 		"id":              result.ID,
