@@ -5,6 +5,7 @@ import (
 	"go_link_reducer/config"
 	"go_link_reducer/types"
 	"log"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 		)
 		log.Print("using development dsn")
 	} else {
-		dsn = cfg.DatabaseURL
+		dsn = os.Getenv("DATABASE_URL")
 	}
 	log.Printf("dsn: %s", dsn)
 
