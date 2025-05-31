@@ -32,28 +32,10 @@ func NewURLHandler(repo contract.URLRepository, validator *validator.Validate) *
 }
 
 func (u *URLHandler) RegisterRoute(route *gin.Engine) {
-	// Add logging middleware for debugging
-	route.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		return fmt.Sprintf("[%s] %s %s %d %s\n",
-			param.TimeStamp.Format("2006/01/02 - 15:04:05"),
-			param.Method,
-			param.Path,
-			param.StatusCode,
-			param.Latency,
-		)
-	}))
-
 	route.POST("urls", u.CreateURL)
 	route.GET("/urls", u.GetAll)
 	route.GET("/:short_code", u.Redirect)
 	route.POST("/cron/delete-expired", u.Delete)
-
-	// Add a catch-all route to debug unexpected requests
-	route.NoRoute(func(c *gin.Context) {
-		log.Printf("=== NoRoute Hit ===")
-		log.Printf("Method: %s, Path: %s, Host: %s", c.Request.Method, c.Request.URL.Path, c.Request.Host)
-		c.JSON(http.StatusNotFound, gin.H{"error": "route not found"})
-	})
 }
 
 func (u *URLHandler) CreateURL(c *gin.Context) {
