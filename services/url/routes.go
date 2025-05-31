@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -72,7 +73,10 @@ func (u *URLHandler) CreateURL(c *gin.Context) {
 		return
 	}
 
-	shortURL := fmt.Sprintf("http://localhost:8080/%s", result.ShortCode)
+	port := os.Getenv("PORT")
+	addr := "0.0.0.0:" + port
+
+	shortURL := fmt.Sprintf("http://%s/%s", addr, result.ShortCode)
 
 	c.JSON(http.StatusOK, gin.H{
 		"id":              result.ID,

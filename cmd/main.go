@@ -28,8 +28,12 @@ func main() {
 
 	router := api.NewRoutes(db)
 
+	port := config.GetEnv("PORT", "8080")
+
+	addr := "0.0.0.0:" + port
+
 	srv := http.Server{
-		Addr:    "localhost:8080",
+		Addr:    addr,
 		Handler: router,
 	}
 
