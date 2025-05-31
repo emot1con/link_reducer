@@ -43,7 +43,7 @@ func (u *URLHandler) RegisterRoute(route *gin.Engine) {
 		)
 	}))
 
-	route.POST("/new/url", u.CreateURL)
+	route.POST("urls", u.CreateURL)
 	route.GET("/urls", u.GetAll)
 	route.GET("/:short_code", u.Redirect)
 	route.POST("/cron/delete-expired", u.Delete)
