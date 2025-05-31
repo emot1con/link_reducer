@@ -14,7 +14,7 @@ import (
 func main() {
 	log.Println("getting environment")
 	if err := godotenv.Load(); err != nil {
-		log.Panic("error getting environment", err)
+		log.Printf("error getting environment: %v", err)
 	}
 
 	cfg := config.InitConfig()
