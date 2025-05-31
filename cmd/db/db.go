@@ -13,6 +13,7 @@ import (
 func NewDB(cfg *config.Config) (*gorm.DB, error) {
 	var dsn string
 
+	log.Printf("choosing dsn env")
 	if cfg.AppEnvironment == "development" {
 		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
 			cfg.PublicHost, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.Port,
@@ -21,6 +22,7 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 	} else {
 		dsn = cfg.DatabaseURL
 	}
+	log.Printf("dsn: %s", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
