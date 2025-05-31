@@ -7,7 +7,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -39,6 +38,8 @@ func (u *URLHandler) RegisterRoute(route *gin.Engine) {
 }
 
 func (u *URLHandler) CreateURL(c *gin.Context) {
+	log.Printf("Received %s request to %s from %s", c.Request.Method, c.Request.URL.Path, c.Request.Host)
+
 	var payload types.CreateURLPayload
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -66,17 +67,15 @@ func (u *URLHandler) CreateURL(c *gin.Context) {
 	if payload.ExpirationDate.IsZero() {
 		payload.ExpirationDate = time.Now().Add(7 * 24 * time.Hour)
 	}
-
 	result, err := u.repo.Create(payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	port := os.Getenv("PORT")
-	addr := "0.0.0.0:" + port
-
-	shortURL := fmt.Sprintf("http://%s/%s", addr, result.ShortCode)
+	// Get the base URL based on environment
+	baseURL := getBaseURL(c)
+	shortURL := fmt.Sprintf("%s/%s", baseURL, result.ShortCode)
 
 	c.JSON(http.StatusOK, gin.H{
 		"id":              result.ID,
@@ -137,4 +136,20 @@ func generateShortURL(length int) string {
 	}
 
 	return string(shortCode)
+}
+
+// getBaseURL returns the appropriate base URL based on the environment
+func getBaseURL(c *gin.Context) string {
+	// Check if we're running on Railway (or any production environment)
+	if c.Request.Host != "" && c.Request.Host != "localhost:8080" && c.Request.Host != "127.0.0.1:8080" {
+		// Use the actual host from the request with HTTPS (Railway enforces HTTPS)
+		if strings.Contains(c.Request.Host, "railway.app") || strings.Contains(c.Request.Host, ".up.railway.app") {
+			return "https://" + c.Request.Host
+		}
+		// For other production environments, also use HTTPS
+		return "https://" + c.Request.Host
+	}
+
+	// For localhost development
+	return "http://" + c.Request.Host
 }
