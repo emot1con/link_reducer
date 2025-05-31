@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -31,14 +32,38 @@ func NewURLHandler(repo contract.URLRepository, validator *validator.Validate) *
 }
 
 func (u *URLHandler) RegisterRoute(route *gin.Engine) {
+	// Add logging middleware for debugging
+	route.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("[%s] %s %s %d %s\n",
+			param.TimeStamp.Format("2006/01/02 - 15:04:05"),
+			param.Method,
+			param.Path,
+			param.StatusCode,
+			param.Latency,
+		)
+	}))
+
 	route.POST("/new/url", u.CreateURL)
 	route.GET("/urls", u.GetAll)
 	route.GET("/:short_code", u.Redirect)
 	route.POST("/cron/delete-expired", u.Delete)
+
+	// Add a catch-all route to debug unexpected requests
+	route.NoRoute(func(c *gin.Context) {
+		log.Printf("=== NoRoute Hit ===")
+		log.Printf("Method: %s, Path: %s, Host: %s", c.Request.Method, c.Request.URL.Path, c.Request.Host)
+		c.JSON(http.StatusNotFound, gin.H{"error": "route not found"})
+	})
 }
 
 func (u *URLHandler) CreateURL(c *gin.Context) {
-	log.Printf("Received %s request to %s from %s", c.Request.Method, c.Request.URL.Path, c.Request.Host)
+	log.Printf("=== CreateURL called ===")
+	log.Printf("Method: %s", c.Request.Method)
+	log.Printf("URL: %s", c.Request.URL.String())
+	log.Printf("Host: %s", c.Request.Host)
+	log.Printf("Headers: %v", c.Request.Header)
+	log.Printf("Content-Type: %s", c.GetHeader("Content-Type"))
+	log.Printf("User-Agent: %s", c.GetHeader("User-Agent"))
 
 	var payload types.CreateURLPayload
 	if err := c.ShouldBindJSON(&payload); err != nil {
@@ -67,15 +92,17 @@ func (u *URLHandler) CreateURL(c *gin.Context) {
 	if payload.ExpirationDate.IsZero() {
 		payload.ExpirationDate = time.Now().Add(7 * 24 * time.Hour)
 	}
+
 	result, err := u.repo.Create(payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// Get the base URL based on environment
-	baseURL := getBaseURL(c)
-	shortURL := fmt.Sprintf("%s/%s", baseURL, result.ShortCode)
+	port := os.Getenv("PORT")
+	addr := "0.0.0.0:" + port
+
+	shortURL := fmt.Sprintf("http://%s/%s", addr, result.ShortCode)
 
 	c.JSON(http.StatusOK, gin.H{
 		"id":              result.ID,
@@ -136,20 +163,4 @@ func generateShortURL(length int) string {
 	}
 
 	return string(shortCode)
-}
-
-// getBaseURL returns the appropriate base URL based on the environment
-func getBaseURL(c *gin.Context) string {
-	// Check if we're running on Railway (or any production environment)
-	if c.Request.Host != "" && c.Request.Host != "localhost:8080" && c.Request.Host != "127.0.0.1:8080" {
-		// Use the actual host from the request with HTTPS (Railway enforces HTTPS)
-		if strings.Contains(c.Request.Host, "railway.app") || strings.Contains(c.Request.Host, ".up.railway.app") {
-			return "https://" + c.Request.Host
-		}
-		// For other production environments, also use HTTPS
-		return "https://" + c.Request.Host
-	}
-
-	// For localhost development
-	return "http://" + c.Request.Host
 }
