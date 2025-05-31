@@ -22,7 +22,6 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 	} else {
 		dsn = cfg.DatabaseURL
 	}
-	log.Printf("dsn: %s", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
