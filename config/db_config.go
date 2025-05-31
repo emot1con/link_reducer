@@ -22,7 +22,7 @@ func InitConfig() *Config {
 		DBPassword:     GetEnv("POSTGRES_PASSWORD", "psql"),
 		DBName:         GetEnv("POSTGRES_DB", "golang"),
 		JWTSecret:      GetEnv("JWT_SECRET_KEY", ""),
-		DatabaseURL:    os.Getenv("DATABASE_URL"),
+		DatabaseURL:    GetEnv("DATABASE_URL", ""),
 		AppEnvironment: GetEnv("APP_ENV", ""),
 	}
 }
