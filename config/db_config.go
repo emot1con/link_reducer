@@ -10,16 +10,20 @@ type Config struct {
 	DBName                string
 	JWTExpirationInSecond int64
 	JWTSecret             string
+	DatabaseURL           string
+	AppEnvironment        string
 }
 
 func InitConfig() *Config {
 	return &Config{
-		PublicHost: GetEnv("PGHOST", "localhost"),
-		Port:       GetEnv("PGPORT", "5432"),
-		DBUser:     GetEnv("PGUSER", "psql"),
-		DBPassword: GetEnv("POSTGRES_PASSWORD", "psql"),
-		DBName:     GetEnv("POSTGRES_DB", "golang"),
-		JWTSecret:  GetEnv("JWT_SECRET_KEY", ""),
+		PublicHost:     GetEnv("PGHOST", "localhost"),
+		Port:           GetEnv("PGPORT", "5432"),
+		DBUser:         GetEnv("PGUSER", "psql"),
+		DBPassword:     GetEnv("POSTGRES_PASSWORD", "psql"),
+		DBName:         GetEnv("POSTGRES_DB", "golang"),
+		JWTSecret:      GetEnv("JWT_SECRET_KEY", ""),
+		DatabaseURL:    GetEnv("DATABASE_URL", ""),
+		AppEnvironment: GetEnv("APP_ENV", ""),
 	}
 }
 
