@@ -5,8 +5,6 @@ A URL shortener service built with Go to create and manage shortened links effic
 ## Features
 - Shorten long URLs into concise links.
 - Redirect users to the original URLs.
-- Store and manage shortened links in a database.
-- Track basic link usage statistics.
 
 ## Getting Started
 1. **Clone the repository:**
