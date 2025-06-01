@@ -46,9 +46,7 @@ async function handleShortenURL(e) {
     if (expirationDate) {
         payload.expiration_date = new Date(expirationDate).toISOString();
     }
-    
-    try {
-        showLoading(true);
+      try {
         const response = await fetch(`${API_BASE_URL}/urls`, {
             method: 'POST',
             headers: {
@@ -58,7 +56,8 @@ async function handleShortenURL(e) {
         });
         
         const data = await response.json();
-          if (response.ok) {
+        
+        if (response.ok) {
             displayResult(data);
             shortenForm.reset();
             showToast('URL shortened successfully!', 'success');
@@ -68,8 +67,6 @@ async function handleShortenURL(e) {
     } catch (error) {
         console.error('Error:', error);
         showToast(error.message, 'error');
-    } finally {
-        showLoading(false);
     }
 }
 
