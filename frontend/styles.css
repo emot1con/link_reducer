@@ -1,0 +1,353 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+/* Dark mode */
+body.dark-mode {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #e2e8f0;
+}
+
+body.dark-mode .card {
+    background: #2d3748;
+    color: #e2e8f0;
+}
+
+body.dark-mode .card h2 {
+    color: #cbd5e0;
+}
+
+body.dark-mode .form-group input {
+    background: #4a5568;
+    border-color: #718096;
+    color: #e2e8f0;
+}
+
+body.dark-mode .form-group input:focus {
+    border-color: #667eea;
+    background: #4a5568;
+}
+
+body.dark-mode .form-group label {
+    color: #cbd5e0;
+}
+
+body.dark-mode .btn-secondary {
+    background: #4a5568;
+    color: #e2e8f0;
+    border-color: #718096;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background: #718096;
+    border-color: #a0aec0;
+}
+
+body.dark-mode .url-item {
+    background: #4a5568;
+    border-color: #718096;
+    color: #e2e8f0;
+}
+
+body.dark-mode .url-item:hover {
+    border-color: #667eea;
+    background: #2d3748;
+}
+
+body.dark-mode .url-item-title {
+    color: #f7fafc;
+}
+
+body.dark-mode .url-item-short {
+    color: #90cdf4;
+}
+
+body.dark-mode .url-item-stats {
+    color: #a0aec0;
+}
+
+body.dark-mode .result-section {
+    background: #2f855a;
+    border-left-color: #68d391;
+}
+
+body.dark-mode .url-result input {
+    background: #4a5568;
+    border-color: #68d391;
+    color: #e2e8f0;
+}
+
+body.dark-mode .url-details {
+    color: #e2e8f0;
+}
+
+body.dark-mode .url-details strong {
+    color: #f7fafc;
+}
+
+body.dark-mode .empty-state {
+    color: #a0aec0;
+}
+
+body.dark-mode #pageInfo {
+    color: #cbd5e0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .theme-toggle {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Card Styles */
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.card h2 {
+    color: #4a5568;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Button Styles */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f7fafc;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+    background: #edf2f7;
+    border-color: #cbd5e0;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Result Section */
+.result-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f0fff4;
+    border-radius: 10px;
+    border-left: 4px solid #48bb78;
+}
+
+.url-result {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.url-result input {
+    flex: 1;
+    background: white;
+    border: 2px solid #48bb78;
+}
+
+.url-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.url-details p {
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.url-details strong {
+    color: #2d3748;
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    background: #48bb78;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.error {
+    background: #f56565;
+}
+
+.toast.warning {
+    background: #ed8936;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .card {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+      .url-result {
+        flex-direction: column;
+    }
+    
+    .url-details {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Removed unused styles - URL list management was removed */
